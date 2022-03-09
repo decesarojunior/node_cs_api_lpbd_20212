@@ -62,7 +62,7 @@
                           </div>
                           <div class="form-group">
                               <label for="inputComplemento">Complemento:</label>
-                              <input type="text" v-model="novo_endereco.complemento" class="form-control" id="inputComplemento"><!--Atividade 2 - Aplicar um input/calendario mais apropriado. -->
+                              <input type="text" v-model="novo_endereco.complemento" class="form-control" id="inputComplemento">
                           </div>     
                             
                           <button @click="addEndereco" class="btn btn-primary" type="button">Salvar</button>
@@ -77,7 +77,6 @@
 
                     <table class="table table-striped" >
                         <tr>
-                            <th scope="col">#</th>
                             <th scope="col">NickName</th>
                             <th scope="col">Data de Cadastro</th>
                             <th scope="col">Quantidade de Pontos</th>
@@ -88,9 +87,8 @@
                         </tr>                     
                         <tbody>
                             <tr v-for="(j, indice) in jogadores">                                                
-                                    <td>{{indice}}</td>
                                     <td>{{j.nickname}}</td>
-                                    <td>{{j.datacadastro | formataData}}</td>
+                                    <td>{{j.datacadastro}}</td>
                                     <td>{{j.quantpontos}}</td>
                                     <td>{{j.endereco.cep}}</td>
                                     <td v-if="j.situacao == 'A'"><input type="checkbox" checked disabled></td>
@@ -103,24 +101,20 @@
                     <form id="formulario">                        
                       <h3>Formulário para cadastrar Jogador</h3>
                           <div class="form-group">
-                              <label for="inputIndice">#:</label>
-                              <input type="text" v-model="novo_jogador.indice" class="form-control" id="inputIndice" disabled>
-                          </div>
-                          <div class="form-group">
                               <label for="inputNickname">Nickname:</label>
                               <input type="text" v-model="novo_jogador.nickname" class="form-control" id="inputNickname">
                           </div>
                           <div class="form-group">
                             <label for="inputSenha">Senha:</label>
-                            <input type="password" v-model="novo_jogador.senha" class="form-control" id="inputSenha"><!--Atividade 3 - Aplicar um input mais apropriado. -->
+                            <input type="password" v-model="novo_jogador.senha" class="form-control" id="inputSenha">
                         </div>
                         <div class="form-group">
                               <label for="inputDtCad">D. Cadastro:</label>
-                              <input type="date" v-model="novo_jogador.datacadastro" class="form-control" id="inputDtCad" disabled><!--Atividade 2 - Aplicar um input/calendario mais apropriado. -->
+                              <input type="text" v-model="novo_jogador.datacadastro" class="form-control" id="inputDtCad" disabled>
                         </div>
                         <div class="form-group">
                             <label for="inputDtLast">D. Último Acesso:</label>
-                            <input type="date" v-model="novo_jogador.data_ultimo_login" class="form-control" id="inputDtLast" disabled><!--Atividade 2 - Aplicar um input/calendario mais apropriado. -->
+                            <input type="text" v-model="novo_jogador.data_ultimo_login" class="form-control" id="inputDtLast" disabled>
                         </div>
                         <div class="form-group">
                               <label for="inputQtdPontos">Quantidade de Pontos:</label>
@@ -132,7 +126,7 @@
                         </div>
                         <div class="form-group">
                             <label for="checkSituacao">Situação:</label>
-                            <input type="checkbox" v-model="novo_jogador.situacao" id="checkSituacao"><!--Atividade 1 - Aplicar um input mais apropriado. -->
+                            <input type="checkbox" v-model="novo_jogador.situacao" id="checkSituacao">
                         </div>
 
                         <div class="form-group">
@@ -177,7 +171,7 @@
                                     situacao: '',  
                                     endereco: {codigo: 0, cep: '', complemento: ''}}, 
                   "enderecos": enderecos,
-                  "novo_endereco" : {codigo: '', cep: '', complemento: ''}};
+                  "novo_endereco" : {indice: '', codigo: '', cep: '', complemento: ''}};
 
       Vue.filter('formataData', function (value) {                
                 //yyyy-mm-dd
@@ -201,12 +195,12 @@
                         var input_cep = this.novo_endereco.cep.trim(); 
                         var input_complemento = this.novo_endereco.complemento.trim(); 
                        
-                        //Atividade 5 - testar o tamanho do nickname e senha. Não permitir tamanhos menores do que 4 para ambos.
                         if (input_cep.length == 8) {
                             
                             //documentação sobre o parseInt
                             //https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/parseInt
-                            if(isNaN(parseInt(input_id))){
+                            if(isNaN(parseInt(this.novo_endereco.indice))){
+
                                 var proximo_id;
                                 if(this.enderecos.length == 0){
                                     proximo_id = 1;
@@ -223,7 +217,7 @@
 
                             }else{
 
-                                this.enderecos[input_id] = {id: input_id, 
+                                this.enderecos[this.novo_endereco.indice] = {id: input_id, 
                                                  cep: input_cep, 
                                                  complemento: input_complemento
                                                 };
@@ -241,15 +235,13 @@
                     },
 
                     editEndereco: function (param_index) {
-                        //this.novo_endereco.id = param_index
+                        this.novo_endereco.indice = param_index;
                         this.novo_endereco.id = this.enderecos[param_index].id;
                         this.novo_endereco.cep = this.enderecos[param_index].cep; 
                         this.novo_endereco.complemento = this.enderecos[param_index].complemento;                      
                     },
 
                     remEndereco: function(param_index){
-
-                        // Atividade 4 - Confirmar antes de remover
                         
                         //documentacao sobre o splice
                         //https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/Array/splice
@@ -263,6 +255,7 @@
                     
                     cleanFormularioEndereco: function() {
 
+                        this.novo_endereco.indice = '';
                         this.novo_endereco.id = '';
                         this.novo_endereco.cep = ''; 
                         this.novo_endereco.complemento = '';
@@ -270,50 +263,55 @@
 
                     addJogador: function () {
                         
-                        var input_indice = this.novo_jogador.indice;  
-                        var input_nickname = this.novo_jogador.nickname.trim(); 
-                        var input_data_nascimento = this.novo_jogador.data_nascimento.trim(); 
-                        var input_qtd_estrela = this.novo_jogador.qtd_estrela;                         
-                        var input_senha = this.novo_jogador.senha.trim();
-                        var input_status = this.novo_jogador.status;
-                        var select_endereco = this.novo_jogador.endereco;
+                        var jogador = jQuery.extend({}, this.novo_jogador);//clona o this.novo_jogador e armazena na variavel jogador. dessa forma alteracoes em this.novo_jogador nao irao refletir em jogador.
+                        var endereco = jQuery.extend({}, this.novo_jogador.endereco);//clona o this.novo_jogador.endereco
+                        jogador.endereco = endereco;
 
-                        //Atividade 5 - testar o tamanho do nickname e senha. Não permitir tamanhos menores do que 4 para ambos.
-                        if (input_nickname && input_qtd_estrela > -1 && input_senha && select_endereco) {
+
+                        if (jogador.nickname.trim().length > 0 && jogador.senha.trim().length > 0 && 
+                            jogador.quantpontos > 0 && jogador.quantdinheiro > 0 && 
+                            jogador.endereco.cep.length > 0) {
                             
                             //documentação sobre o parseInt
                             //https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/parseInt
-                            if(isNaN(parseInt(input_indice))){
+                            if(isNaN(parseInt(jogador.indice))){
 
-                                this.jogadores.push({nickname: input_nickname, 
-                                                 data_nascimento: input_data_nascimento, 
-                                                 qtd_estrela: input_qtd_estrela, 
-                                                 status: input_status, 
-                                                 senha:input_senha,
-                                                 endereco:select_endereco}
-                                                );
-
-                                
-                                alert('Novo Jogador cadastrado !');
+                                                         
+                                this.$http.post('http://localhost:4000/insertjogador', jogador
+                                   )
+								.then(response => { 	
+										
+										this.jogadores.push(response.data);										
+                                        alert('Inseriu o jogador '+response.data.nickname);
+									})
+								.catch(error => { 
+                                    console.log(error)
+									alert('Erro ao inserir jogador: '+error.response.data);
+								});	
 
                             }else{
 
-                                this.jogadores[input_indice] = {nickname: input_nickname, 
-                                                 data_nascimento: input_data_nascimento, 
-                                                 qtd_estrela: input_qtd_estrela, 
-                                                 status: input_status, 
-                                                 senha:input_senha,
-                                                 endereco:select_endereco
-                                                };
+                                this.$http.post('http://localhost:4000/updatejogador', jogador
+                                   )
+								.then(response => { 	
+										                                        
+                                        //this.jogadores[jogador.indice]  = response.data;	                                        
+                                        Vue.set(this.jogadores, jogador.indice, response.data);//altera um elemento do vetor this.jogadores
 
-                                alert('Jogador alterado !');
+                                        alert('Alterou o jogador '+response.data.nickname);
+									})
+								.catch(error => { 
+                                    console.log(error)
+									alert('Erro ao alterar jogador: '+error);
+								});	
+
                             }
-                            localStorage.setItem("jogadores" , JSON.stringify(this.jogadores));
+
                             this.cleanFormularioJogador();
 
                         }else{
 
-                            alert("Preencha nickname, estrelas e senha !!!");
+                            alert("Preencha o formulário !!!");
                         }
                     },
 
@@ -321,10 +319,14 @@
 
                         this.novo_jogador.indice = param_index;
                         this.novo_jogador.nickname = this.jogadores[param_index].nickname; 
-                        this.novo_jogador.data_nascimento = this.jogadores[param_index].data_nascimento;
-                        this.novo_jogador.qtd_estrela = this.jogadores[param_index].qtd_estrela;
                         this.novo_jogador.senha = this.jogadores[param_index].senha;
+                        this.novo_jogador.datacadastro = this.jogadores[param_index].datacadastro;
+                        this.novo_jogador.data_ultimo_login = this.jogadores[param_index].data_ultimo_login;
+                        this.novo_jogador.quantpontos = this.jogadores[param_index].quantpontos;
+                        this.novo_jogador.quantdinheiro = this.jogadores[param_index].quantdinheiro;
+                        this.novo_jogador.situacao = this.jogadores[param_index].situacao == "A" ? true : false;
                         this.novo_jogador.endereco = this.jogadores[param_index].endereco;
+                        
                     },
 
                     remJogador: function(param_index){
@@ -334,22 +336,43 @@
                         //documentacao sobre o splice
                         //https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/Array/splice
                         //remove 1 elemento do índice definido pela variavel param_index
-                        this.jogadores.splice(param_index, 1);
+                        var r = confirm("Deseja realmente remover?");
+                        if(r){                            
+                            
+                            this.$http.get('http://localhost:4000/deletejogador/' + this.jogadores[param_index].nickname)
 
-                        localStorage.setItem("jogadores" , JSON.stringify(this.jogadores));
+                                .then(response => {
 
-                        alert('Removeu o jogador: ' + param_index);
+                                    //documentacao sobre o splice
+                                    //https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/Array/splice
+                                    //remove 1 elemento do índice definido pela variavel param_index
+                                    this.jogadores.splice(param_index, 1);
+
+                                    alert('Removeu com sucesso o jogador ' + response.data.nickname);
+
+                                    })
+                                .catch(error => {
+                                        // error callback                                        
+                                        alert('Erro ao remover: ' + error);
+                                        console.log(error);
+                                });	
+
+                        }
+
                     },
 
                     cleanFormularioJogador: function() {
 
                       this.novo_jogador.indice = '';
                       this.novo_jogador.nickname = ''; 
-                      this.novo_jogador.data_nascimento = '';
-                      this.novo_jogador.qtd_estrela = 0;
+                      this.novo_jogador.datacadastro = '';
+                      this.novo_jogador.quantdinheiro = 0;
+                      this.novo_jogador.quantpontos = 0;
                       this.novo_jogador.senha = '';
-                      this.novo_jogador.status = true;
-                      this.novo_jogador.endereco = '';
+                      this.novo_jogador.situacao = false;
+                      this.novo_jogador.endereco.cep = '';
+                      this.novo_jogador.endereco.complemento = '';
+                      this.novo_jogador.data_ultimo_login = '';
                     }
 
                 },
