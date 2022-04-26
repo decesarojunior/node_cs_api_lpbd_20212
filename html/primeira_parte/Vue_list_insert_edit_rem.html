@@ -53,7 +53,7 @@
                         </div>
                         <div class="form-group">
                             <label for="checkStatus">Status:</label>
-                            <input type="text" v-model="novo_jogador.status" class="form-control" id="checkStatus"><!--Atividade - Aplicar um input mais apropriado. -->
+                            <input type="checkbox" v-model="novo_jogador.status" id="checkStatus"><!--Atividade - Aplicar um input mais apropriado. -->
                         </div>
                         <div class="form-group">
                             <label for="inputSenha">Senha:</label>
@@ -61,7 +61,8 @@
                         </div>
                         
                         <button @click="addJogador" class="btn btn-primary" type="button">Salvar</button>
-                        
+                        <button @click="cleanFormulario" class="btn btn-primary" type="button">Limpar</button>
+
                         </div>                                                                            
                 </form>        
 
@@ -73,7 +74,7 @@
                 jogadores:  [ {nickname: 'joaozinho', data_nascimento: '', qtd_estrela: 5, status: true, senha: '123'} 
                             ], 
                             
-                novo_jogador: {indice: '', nickname: '', data_nascimento: '', qtd_estrela: '', status: true, senha: ''}
+                novo_jogador: {indice: '', nickname: '', data_nascimento: '', qtd_estrela: '', status: false, senha: ''}
             };
         
           new Vue({ 
@@ -89,8 +90,9 @@
                         var input_senha = this.novo_jogador.senha.trim();
                         var input_status = this.novo_jogador.status; 
 
-                        //Atividade - testar o tamanho do nickname e senha. Não permitir tamanhos menores do que 4 para ambos.
-                        if (input_nickname && input_qtd_estrela > -1 && input_senha) {
+                        //Atividade - testar o tamanho do nickname e senha. 
+                        //Não permitir tamanhos menores do que 4 para ambos.
+                        if (input_nickname.length > 3 && input_qtd_estrela > -1 && input_senha.length > 3) {
                             
                             //documentação sobre o parseInt
                             //https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/parseInt
@@ -129,18 +131,22 @@
                         this.novo_jogador.data_nascimento = this.jogadores[param_index].data_nascimento;
                         this.novo_jogador.qtd_estrela = this.jogadores[param_index].qtd_estrela;
                         this.novo_jogador.senha = this.jogadores[param_index].senha;
+                        this.novo_jogador.status = this.jogadores[param_index].status;
                     },
 
                     remJogador: function(param_index){
 
                         // Atividade - Confirmar antes de remover
+                        if (window.confirm("Você realmente deseja remover?")) {
+                            
+                                //documentacao sobre o splice
+                                //https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/Array/splice
+                                //remove 1 elemento do índice definido pela variavel param_index
+                                this.jogadores.splice(param_index, 1);
+                                alert('Removeu o jogador: ' + param_index);    
+                        }
                         
-                        //documentacao sobre o splice
-                        //https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/Array/splice
-                        //remove 1 elemento do índice definido pela variavel param_index
-                        this.jogadores.splice(param_index, 1);
-
-                        alert('Removeu o jogador: ' + param_index);
+                        
                     },
                     
                     cleanFormulario: function() {
@@ -150,7 +156,7 @@
                         this.novo_jogador.data_nascimento = '';
                         this.novo_jogador.qtd_estrela = 0;
                         this.novo_jogador.senha = '';
-                        this.novo_jogador.status = true;
+                        this.novo_jogador.status = false;
                     }
 
                 }

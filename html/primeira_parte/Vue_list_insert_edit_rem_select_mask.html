@@ -88,7 +88,7 @@
 
                     patentes: [{codigo: 1, descricao: 'Bronze'},{codigo: 2, descricao: 'Prata'},{codigo: 3, descricao: 'Ouro'}],
 
-                    jogadores:  [ {nickname: 'joaozinho', data_nascimento: '2020/09/01', qtd_estrela: 5, status: true, senha: '123', patente: {} }], 
+                    jogadores:  [ {nickname: 'joaozinho', data_nascimento: '2020-09-01', qtd_estrela: 5, status: true, senha: '123', patente: {} }], 
                             
                     form_jogador: {indice: '', nickname: '', data_nascimento: '', qtd_estrela: '', status: true, senha: '', patente: {} }
                 
@@ -120,7 +120,7 @@
 
                         //Atividade 5 - testar o tamanho do nickname e senha. Não permitir tamanhos menores do que 4 para ambos.                                                
 
-                        if (input_nickname.length == 4 && input_qtd_estrela > -1 && input_senha.length == 4 && select_patente !== undefined ) {
+                        if (input_nickname.length >= 4 && input_qtd_estrela > -1 && input_senha.length == 4 && select_patente !== undefined ) {
                             
                             //documentação sobre o parseInt
                             //https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/parseInt
@@ -151,7 +151,7 @@
 
                         }else{
 
-                            alert("Preencha nickname, estrelas e senha !!!");
+                            alert("Preencha nickname, estrelas, patente e senha !!!");
                         }
                     },
 
@@ -200,6 +200,12 @@
                     checkletra: function (event) {
                         this.form_jogador.nickname = this.form_jogador.nickname.replace(/[^a-z]/g, '');
                     }
+
+                },
+                created : function () {
+
+                    this.cleanFormulario();
+
                 }
             }); 
         });

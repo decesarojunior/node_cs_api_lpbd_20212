@@ -17,6 +17,7 @@
                         <th scope="col">Data Nascimento</th>
                         <th scope="col">Quantidade de Estrelas</th>
                         <th scope="col">Patente</th>
+                        <th scope="col">Endereço</th>
                         <th scope="col">Status</th>                            
                         <th scope="col">Alterar</th>
                         <th scope="col">Remover</th>
@@ -28,6 +29,7 @@
                                 <td>{{j.data_nascimento}}</td>
                                 <td>{{j.qtd_estrela}}</td>
                                 <td>{{j.patente.descricao}}</td>
+                                <td>{{j.endereco.cep}}</td>
                                 <td v-if="j.status"><input type="checkbox" checked disabled></td>
                                 <td v-if="!j.status"><input type="checkbox" disabled></td>
                                 <td><button v-on:click="editJogador(indice)" class="btn" type="button">Alterar</button></td>
@@ -57,15 +59,22 @@
                         <div class="form-group">
                             <label for="selectPatente">Patente:</label>
                             <select v-model="novo_jogador.patente" class="form-control" id="selectPatente">
-                                <option disabled value="">Escolha um item</option>
+                                <option disabled selected value="">Escolha um item</option>
                                 <option v-for="p in patentes" v-bind:value="p">
                                     {{ p.descricao }}
                                   </option>
                             </select>
                         </div>
 
-
-
+                        <div class="form-group">
+                            <label for="selectEndereco">Endereço:</label>
+                            <select v-model="novo_jogador.endereco" class="form-control" id="selectEndereco">
+                                <option disabled selected value="">Escolha um item</option>
+                                <option v-for="e in enderecos" v-bind:value="e">
+                                    {{ e.cep }}
+                                  </option>
+                            </select>
+                        </div>
 
                         <div class="form-group">
                             <label for="checkStatus">Status:</label>
@@ -88,11 +97,11 @@
         $(document).ready(function() {
             var dados = { 
 
-                    enderecos: [{id : 0, cep : ''},{id : 1, cep : ''},{}],
+                    enderecos: [{id : 0, cep : '99010000'},{id : 1, cep : '99052250'}],
 
                     patentes: [{codigo: 1, descricao: 'Bronze'},{codigo: 2, descricao: 'Prata'},{codigo: 3, descricao: 'Ouro'}],
 
-                    jogadores:  [ {nickname: 'joaozinho', data_nascimento: '', qtd_estrela: 5, status: true, senha: '123', patente: {codigo: 1, descricao: 'Bronze'}, endereco: {} }], 
+                    jogadores:  [ {nickname: 'joaozinho', data_nascimento: '', qtd_estrela: 5, status: true, senha: '123', patente: {codigo: 1, descricao: 'Bronze'}, endereco: {id : 0, cep : '99010000'} }], 
                             
                     novo_jogador: {indice: '', nickname: '', data_nascimento: '', qtd_estrela: '', status: false, senha: '', patente: {}, endereco: {}}
                 
@@ -111,6 +120,7 @@
                         var input_senha = this.novo_jogador.senha.trim();
                         var input_status = this.novo_jogador.status;
                         var select_patente = this.novo_jogador.patente;
+                        var select_endereco = this.novo_jogador.endereco;
 
                         //Atividade 5 - testar o tamanho do nickname e senha. Não permitir tamanhos menores do que 4 para ambos.
                         if (input_nickname && input_qtd_estrela > -1 && input_senha) {
@@ -124,7 +134,8 @@
                                                  qtd_estrela: input_qtd_estrela, 
                                                  status: input_status, 
                                                  senha:input_senha,
-                                                 patente:select_patente}
+                                                 patente:select_patente,
+                                                 endereco: select_endereco}
                                                 );
                                 alert('Novo Jogador cadastrado !');
 
@@ -135,7 +146,8 @@
                                                  qtd_estrela: input_qtd_estrela, 
                                                  status: input_status, 
                                                  senha:input_senha,
-                                                 patente:select_patente
+                                                 patente:select_patente,
+                                                 endereco: select_endereco
                                                 };
 
                                 alert('Jogador alterado !');
@@ -156,6 +168,7 @@
                         this.novo_jogador.qtd_estrela = this.jogadores[param_index].qtd_estrela;
                         this.novo_jogador.senha = this.jogadores[param_index].senha;
                         this.novo_jogador.patente = this.jogadores[param_index].patente;
+                        this.novo_jogador.endereco = this.jogadores[param_index].endereco;
                         this.novo_jogador.status = this.jogadores[param_index].status;
                     },
 
@@ -180,6 +193,7 @@
                         this.novo_jogador.senha = '';
                         this.novo_jogador.status = false;
                         this.novo_jogador.patente = '';
+                        this.novo_jogador.endereco = '';
                     }
 
                 }
