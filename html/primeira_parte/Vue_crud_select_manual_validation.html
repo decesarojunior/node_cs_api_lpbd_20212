@@ -36,7 +36,7 @@
                     </tbody>
                 </table>
                 <form id="formulario">
-                    <!-- passo 2-->>
+                    <!-- passo 2-->
                     <p v-if="errors.length">
                         <b>Por favor, corrija o(s) seguinte(s) erro(s):</b>
                         <ul>
@@ -133,7 +133,11 @@
 
                         this.errors = [];
 
-                        if (this.novo_jogador.nickname.trim().length > 3 && this.novo_jogador.qtd_estrela > 0 && this.novo_jogador.qtd_estrela < 101 && this.novo_jogador.senha.length > 3 && !isNaN(parseInt(this.novo_jogador.patente.codigo))) {
+                        if (this.novo_jogador.nickname.trim().length > 3 && 
+                           this.novo_jogador.qtd_estrela > 0 &&
+                            this.novo_jogador.qtd_estrela < 101 && 
+                            this.novo_jogador.senha.length > 3 && 
+                            !isNaN(parseInt(this.novo_jogador.patente.codigo))) {
                             return true;
                         }
 

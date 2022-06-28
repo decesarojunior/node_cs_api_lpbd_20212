@@ -20,6 +20,7 @@
                  <li class="active"><a data-toggle="pill" href="#home">Home</a></li>
                  <li><a data-toggle="pill" href="#menu1">Endereço</a></li>
                  <li><a data-toggle="pill" href="#menu2">Jogador</a></li>
+                 <li><a data-toggle="pill" href="#menu3">Modo</a></li>
                </ul>
              </div>
              <div class="col-xs-9">
@@ -28,6 +29,33 @@
                    <h3>HOME</h3>
                    <p>Em breve autenticação de Jogador... </p>
                 </div>
+                <div id="menu3" class="tab-pane fade">
+                    <h2>Listagem de Modos</h2>   
+
+                    <table class="table table-striped" >
+                        <tr>
+                            <th scope="col">Código</th>
+                            <th scope="col">Nome</th>
+                            <th scope="col">Data de Criação</th>
+                            <th scope="col">Quantidade de Boots</th>
+                            <th scope="col">Quantidade de Rounds</th>
+                            <th scope="col">Alterar</th>
+                            <th scope="col">Remover</th>
+                        </tr>                     
+                        <tbody>
+                            <tr v-for="(m, indice) in modos">                                                
+                                    <td>{{m.codigo}}</td>
+                                    <td>{{m.nome}}</td>
+                                    <td>{{m.datacriacao}}</td>
+                                    <td>{{m.quantboots}}</td>
+                                    <td>{{m.quantrounds}}</td>
+                                    <td><button v-on:click="editModo(indice, m.codigo)" class="btn" type="button">Alterar</button></td>
+                                    <td><button v-on:click="remModo(indice, m.codigo)" class="btn" type="button">Remover</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                 </div>
                 <div id="menu1" class="tab-pane fade">
                   
                     <h2>Listagem de Endereços</h2>   
@@ -169,6 +197,8 @@
 
     $(document).ready(function() {
 
+       var modos = [];
+
       var jogadores = [];
 
       var enderecos = [];
@@ -184,7 +214,9 @@
                                     situacao: '',  
                                     endereco: {codigo: 0, cep: '', complemento: ''}}, 
                   "enderecos": enderecos,
-                  "novo_endereco" : {indice: '', codigo: '', cep: '', complemento: '', jogador : {}}};
+                  "novo_endereco" : {indice: '', codigo: '', cep: '', complemento: '', jogador : {}},
+                  "modos" : modos
+                };
 
       Vue.filter('formataData', function (value) {                
                 //yyyy-mm-dd
@@ -407,8 +439,15 @@
                       this.novo_jogador.situacao = false;
                       this.novo_jogador.endereco = '';
                       this.novo_jogador.data_ultimo_login = '';
-                    }
+                    },
 
+                    editModo: function(param_index, param_codigo) {
+
+                    },
+
+                    remModo: function(param_index, param_codigo){
+
+                    }
                 },
                 created: function(){
                 
@@ -435,12 +474,11 @@
                         
                         }).catch(response => {
                             // error callback
-                            alert('Não conectou no serviço: listjogador');
+                           // alert('Não conectou no serviço: listjogador');
                             console.log(response);
                         });
 
-                        this.$http.get('http://localhost:4000/listendereco')
-                                        
+                        this.$http.get('http://localhost:4000/listendereco')                                        
                                 .then(response => {
         
                                     for(let e of response.data){
@@ -451,10 +489,23 @@
                                           "jogador" : {"nickname": e.nickname}});
 
                                     }
-                                
                                 }).catch(response => {
                                     // error callback
-                                    alert('Não conectou no serviço: listendereco');
+                                   // alert('Não conectou no serviço: listendereco');
+                                    console.log(response);
+                                });
+
+                                this.$http.get('http://localhost:4000/listmodo')                                        
+                                .then(response => {
+        
+                                    for(let m of response.data){
+        
+                                        this.modos.push(m);
+
+                                    }
+                                }).catch(response => {
+                                    // error callback
+                                    alert('Não conectou no serviço: listmodo');
                                     console.log(response);
                                 });
                 

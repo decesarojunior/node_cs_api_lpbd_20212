@@ -195,10 +195,12 @@
                         this.form_jogador.patente = '';
                     },
                     checknum: function (event) {
-                        this.form_jogador.qtd_estrela = this.form_jogador.qtd_estrela.replace(/[^0-9]/g, '');
+                        this.form_jogador.qtd_estrela 
+                           = this.form_jogador.qtd_estrela.replace(/[^0-9]/g, '');
                     },
                     checkletra: function (event) {
-                        this.form_jogador.nickname = this.form_jogador.nickname.replace(/[^a-z]/g, '');
+                        this.form_jogador.nickname 
+                        = this.form_jogador.nickname.replace(/[^a-z]/g, '');
                     }
 
                 },
