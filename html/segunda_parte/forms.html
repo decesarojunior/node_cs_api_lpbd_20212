@@ -49,11 +49,42 @@
                                     <td>{{m.datacriacao}}</td>
                                     <td>{{m.quantboots}}</td>
                                     <td>{{m.quantrounds}}</td>
-                                    <td><button v-on:click="editModo(indice, m.codigo)" class="btn" type="button">Alterar</button></td>
+                                    <td><button v-on:click="editModo(indice)" class="btn" type="button">Alterar</button></td>
                                     <td><button v-on:click="remModo(indice, m.codigo)" class="btn" type="button">Remover</button></td>
                             </tr>
                         </tbody>
                     </table>
+
+                    <form id="formularioModo">     
+                        <h3>Formulário para cadastrar e alterar Modo</h3>                   
+                        <div>
+                          <div class="form-group">
+                            <label for="inputId">Código:</label>
+                            <input type="text" v-model="novo_modo.codigo" class="form-control" id="inputId" disabled>
+                          </div>
+                          <div class="form-group">
+                              <label for="inputNome">Nome:</label>
+                              <input type="text" v-model="novo_modo.nome" class="form-control" id="inputNome">
+                          </div>
+                          <div class="form-group">
+                              <label for="inputComplemento">Quantidade de Boots:</label>
+                              <input type="number" v-model="novo_modo.quantboots" class="form-control" id="inputQuantboots">
+                          </div>
+
+                          <div class="form-group">
+                            <label for="inputComplemento">Quantidade de Rounds:</label>
+                            <input type="number" v-model="novo_modo.quantrounds" class="form-control" id="inputQuantrounds">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="inputComplemento">Data de Criação:</label>
+                            <input type="date" v-model="novo_modo.datacriacao" class="form-control" id="inputDatacriacao" disabled>
+                        </div>
+                          
+                          <button @click="addModo" class="btn btn-primary" type="button">Salvar</button>
+                          <button @click="cleanFormularioModo" class="btn btn-primary" type="button">Limpar</button>                         
+                        </div>                                                                            
+                    </form> 
 
                  </div>
                 <div id="menu1" class="tab-pane fade">
@@ -215,7 +246,13 @@
                                     endereco: {codigo: 0, cep: '', complemento: ''}}, 
                   "enderecos": enderecos,
                   "novo_endereco" : {indice: '', codigo: '', cep: '', complemento: '', jogador : {}},
-                  "modos" : modos
+                  "modos" : modos,
+                  "novo_modo" : { indice: '',  
+                                  codigo: '', 
+                                  nome : '', 
+                                  datacriacao : '',
+                                  quantboots : '',
+                                  quantrounds : '' }
                 };
 
       Vue.filter('formataData', function (value) {                
@@ -234,7 +271,52 @@
                 el: '#app', 
                 data: dados,
                 methods: { 
+                    addModo: function () {
 
+                        var modo = jQuery.extend({}, this.novo_modo);//clona o this.novo_endereco e armazena na variavel jogador. dessa forma alteracoes em this.novo_jogador nao irao refletir em jogador.
+                                               
+                        if (modo.nome.length > 0) {
+                            
+                            //documentação sobre o parseInt
+                            //https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/parseInt
+                            if(isNaN(parseInt(modo.indice))){
+
+                                this.$http.post('http://localhost:4000/insertmodo', modo
+                                    )
+                                .then(response => { 	
+                                        
+                                        this.modos.push(response.data);										
+                                        alert('Inseriu o Modo '+response.data.codigo);
+                                    })
+                                .catch(error => {                                     
+                                    alert('Erro ao inserir Modo: '+error.response.data);
+                                });
+
+                            }else{
+
+                                this.$http.post('http://localhost:4000/updatemodo', modo
+                                    )
+                                .then(response => { 	
+                                                                                                                        
+                                        Vue.set(this.modos, modo.indice, response.data);
+
+                                        alert('Alterou o Modo '+response.data.codigo);
+                                    })
+                                .catch(error => {                                     
+                                    alert('Erro ao alterar Modo: '+error);
+                                });	
+
+                            }
+                                                  
+                            this.cleanFormularioModo();
+                       
+                    }else{
+
+                        alert("Preencha formulario de Modo !!!");
+                    }
+
+
+                    },
                     addEndereco: function () {                        
 
                         var endereco = jQuery.extend({}, this.novo_endereco);//clona o this.novo_endereco e armazena na variavel jogador. dessa forma alteracoes em this.novo_jogador nao irao refletir em jogador.
@@ -322,7 +404,14 @@
                         }
 
                     },
-                    
+                    cleanFormularioModo: function () {
+                        this.novo_modo.indice = '';
+                        this.novo_modo.codigo = '';
+                        this.novo_modo.nome = '';
+                        this.novo_modo.quantboots = '';
+                        this.novo_modo.quantrounds = '';
+                        this.novo_modo.datacriacao = '';
+                    },
                     cleanFormularioEndereco: function() {
 
                         this.novo_endereco.indice = '';
@@ -441,11 +530,44 @@
                       this.novo_jogador.data_ultimo_login = '';
                     },
 
-                    editModo: function(param_index, param_codigo) {
+                    editModo: function(param_index) {
+
+                        this.novo_modo.indice = param_index;
+                        this.novo_modo.codigo = this.modos[param_index].codigo;
+                        this.novo_modo.nome = this.modos[param_index].nome;
+                        this.novo_modo.quantboots = this.modos[param_index].quantboots;
+                        this.novo_modo.quantrounds = this.modos[param_index].quantrounds;
+                        this.novo_modo.datacriacao = this.modos[param_index].datacriacao;
+                        
 
                     },
 
                     remModo: function(param_index, param_codigo){
+                            var decisao = confirm('Deseja realmente remover o Modo ' + 
+                                                               param_codigo + ' ?');
+                            if(decisao){
+
+                                    this.$http.get('http://localhost:4000/deletemodo/' + this.modos[param_index].codigo)
+
+                                        .then(response => {
+
+                                            //documentacao sobre o splice
+                                            //https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/Array/splice
+                                            //remove 1 elemento do índice definido pela variavel param_index
+                                            this.modos.splice(param_index, 1);
+
+                                            alert('Removeu com sucesso o Modo ' + response.data.codigo);
+
+                                            })
+                                        .catch(error => {
+                                                // error callback                                        
+                                                alert('Erro ao remover o modo '+ param_codigo +': ' + error);
+                                                console.log(error);
+                                        });	
+
+                            }else{
+                                alert('Modo não removido !!!');
+                            }
 
                     }
                 },
